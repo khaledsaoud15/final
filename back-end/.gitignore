@@ -1,0 +1,10 @@
+./node_modules
+./.env
+./coverage
+./dist
+./build
+./logs
+./public
+./temp
+./target
+*.log

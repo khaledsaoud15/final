@@ -1,15 +1,39 @@
+import axios from "axios";
 import { Eye, EyeClosed, Mail, User } from "lucide-react";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser } from "../app/auth/authSlice";
 
 const Signup = () => {
+  const [formData, setFormdata] = useState({
+    fullname: "",
+    email: "",
+    password: "",
+    role: "",
+  });
   const [active, setActive] = useState(true);
+  const dispatch = useDispatch();
+  const { message } = useSelector((state) => state.auth);
+
+  const handlInputs = (e) => {
+    setFormdata({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const register = () => {
+    dispatch(registerUser(formData));
+    setFormdata({
+      fullname: "",
+      email: "",
+      password: "",
+      role: "",
+    });
+  };
+
   return (
     <div className="lg:flex lg:items-center h-screen lg:justify-around bg-pattern bg-center bg-cover bg-no-repeat ">
       <section className="lg:static absolute top-1/2 left-1/2 lg:-translate-0 -translate-1/2 h-fit py-3 px-8 space-y-4 rounded shadow border border-gray-200 w-3/4 md:w-2/5 lg:w-1/3 bg-white">
-        <h1 className="text-xl font-bold text-gray-900 text-center text-primary">
-          Sign Up
-        </h1>
+        <h1 className="text-xl font-bold  text-center text-primary">Sign Up</h1>
         <div className="flex flex-col gap-4 w-full">
           <div className="space-y-2">
             <label
@@ -22,6 +46,9 @@ const Signup = () => {
               <input
                 type="email"
                 className="w-full h-full py-2 px-2 border-none outline-none"
+                name="email"
+                onChange={handlInputs}
+                value={formData.email}
               />
               <Mail className="text-secondary text-sm" />
             </div>
@@ -29,14 +56,17 @@ const Signup = () => {
           <div className="space-y-2">
             <label
               className="block text-sm font-medium text-accent"
-              htmlFor="email"
+              htmlFor="fullname"
             >
-              Username*:
+              Fullname*:
             </label>
             <div className="flex items-center justify-between border border-gray-200 rounded shadow h-10 px-2">
               <input
-                type="email"
+                type="text"
                 className="w-full h-full py-2 px-2 border-none outline-none"
+                name="fullname"
+                onChange={handlInputs}
+                value={formData.fullname}
               />
               <User className="text-secondary text-sm" />
             </div>
@@ -52,6 +82,9 @@ const Signup = () => {
               <input
                 type={active ? "password" : "text"}
                 className="w-full h-full py-2 px-2 border-none outline-none"
+                name="password"
+                onChange={handlInputs}
+                value={formData.password}
               />
               {active ? (
                 <Eye
@@ -76,6 +109,7 @@ const Signup = () => {
                   name="role"
                   value="client"
                   id="client"
+                  onChange={handlInputs}
                 />
                 <label htmlFor="client">Client</label>
               </div>
@@ -86,6 +120,7 @@ const Signup = () => {
                   name="role"
                   value="mechanic"
                   id="mechanic"
+                  onChange={handlInputs}
                 />
                 <label htmlFor="mechanic">Mechanic</label>
               </div>
@@ -93,7 +128,10 @@ const Signup = () => {
           </div>
         </div>
 
-        <button className="w-full rounded bg-accent shadow-lg py-3 text-white cursor-pointer hover:bg-primary">
+        <button
+          onClick={register}
+          className="w-full rounded bg-accent shadow-lg py-3 text-white cursor-pointer hover:bg-primary"
+        >
           Register
         </button>
         <p className="text-xs text-accent text-center md:text-sm lg:text-base">
@@ -102,6 +140,7 @@ const Signup = () => {
             Login
           </Link>
         </p>
+        <p className="text-green-500 text-center">{message}</p>
       </section>
       <img
         src="./car.png"
